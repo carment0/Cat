@@ -1,24 +1,22 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
-  entry: './components/entry.jsx',
+  entry: path.join(__dirname, '/components/entry.jsx'),
   output: {
-    filename: './bundle.js',
+    path: path.join(__dirname),
+    filename: 'bundle.js'
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '*']
   },
   module: {
     loaders: [
       {
-        test: [/\.jsx?$/],
-        exclude: /(node_modules)/,
+        test: [/\.js$/, /\.jsx$/],
         loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
-      }
+        exclude: /node_modules/
+      },
     ]
   },
-  devtool: 'source-map',
-  resolve: {
-    extensions: ['.js', '.jsx', '*']
-  }
+  devtool: 'source-maps'
 };
