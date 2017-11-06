@@ -2,14 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Main from '../genetic_algorithm/main'
 // Components
-
 
 class Root extends React.Component {
   render() {
     return(
       <div>
-        is the root page
+        <button onClick={function() {new Main();}}>start</button>
       </div>
     )
   }

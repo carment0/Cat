@@ -1,34 +1,76 @@
 class Organism {
-  constructor(geneLength = 0, genes = []) {
+  /**
+   * @description Organism is an object that represents a text phrase.
+   * @param {string} targetPhrase
+   * @param {number} mutationRate - Given as a percentage
+   * @param {array} genes - Array of characters
+   */
+  constructor(target, mutationRate, genes = []) {
+    this.mutationRate = mutationRate;
+    this.targetPhrase = target;
     this.genes = genes;
-    this.fitness = 0;
-    if (this.name === undefined || this.name.length == 0) {
-      this._createGene(geneLength)
-    };
-    this._calculateGeneFitness(targetPhrase);
+
+    // If gene is not passed, instantiate one
+    if (this.genes.length === 0) {
+      this._createGene();
+    }
+
+    this._mutate();
+    this._calculateOrganismFitness();
   }
 
   getPhraseFromGene() {
-    return this.genes.join("");
+    return this.genes.join('');
   }
 
-  _createGene(geneLength) {
-    for (let i = 0; i < geneLength; i++) {
-      let randomChar = Math.floor(Math.random() * 126) + 32;
+  isPerfect() {
+    return this.targetPhrase === this.getPhraseFromGene();
+  }
+
+  recombination(otherOrganism) {
+    const splitIndex = Math.floor(Math.random() * this.genes.length);
+
+    const offspringGene = [];
+    for (let i = 0; i < this.genes.length; i += 1) {
+      if (i < splitIndex) {
+        offspringGene.push(this.genes[i]);
+      } else {
+        offspringGene.push(otherOrganism.genes[i]);
+      }
+    }
+
+    const offspring = new Organism(this.targetPhrase, this.mutationRate, offspringGene);
+
+    return offspring;
+  }
+
+  _mutate() {
+    for (let i = 0; i < this.genes.length; i += 1) {
+      if (Math.random() < this.mutationRate / 100) {
+        const randomChar = Math.floor(Math.random() * 126) + 32;
+        this.genes[i] = String.fromCharCode(randomChar);
+      }
+    }
+  }
+
+  _createGene() {
+    for (let i = 0; i < this.targetPhrase.length; i += 1) {
+      const randomChar = Math.floor(Math.random() * 126) + 32;
       this.genes[i] = String.fromCharCode(randomChar);
     }
   }
 
-  // set fitness score (%)
-  _calculateOrganismFitness(targetPhrase) {
+  _calculateOrganismFitness() {
     let fitnessScore = 0;
-    for (let i = 0; i < this.genes.length; i++) {
-      if (this.genes[i] === targetPhrase.charAt(i)) {
-        score++;
+    for (let i = 0; i < this.genes.length; i += 1) {
+      if (this.genes[i] === this.targetPhrase[i]) {
+        fitnessScore += 1;
       }
     }
-    this.fitness = ( score / targetPhrase.length ) * 100;
+
+    this.fitness = (fitnessScore / this.targetPhrase.length) * 100;
   }
 }
 
+// module.exports = Organism;
 export default Organism;
